@@ -1,34 +1,39 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-const galleryItems = document.querySelector('gallery');
-
-(function(){
-const markup = galleryItems.map(({preview,original,description}))
-<ul class="gallery">
-<li class="gallery__item">
-  <a class="gallery__link" href="large-image.jpg">
-    <img class="gallery__image" src="small-image.jpg" data-source="large-image.jpg" alt="Image description" />
+const galleryEl = document.querySelector(".gallery");
+(function () {
+  const markup = galleryItems
+    .map(
+      ({ preview, original, description }) =>
+        `<li class="gallery__item">
+  <a class="gallery__link" href="${original}">
+    <img class="gallery__image js-target" src="${preview}" data-source="${original}" alt="${description}" />
   </a>
-</li>
-</ul>
+</li>`
+    )
+    .join('');
+  galleryEl.insertAdjacentHTML('beforeend', markup);
+})();
 
-})()
+galleryEl.addEventListener('click', onclick);
+function onclick(evt){
 
+    if(!evt.target.classList.contains('js-target')){
+        return;
+    }
+    const li = evt.target.closest('.gallery__item');
 
-console.log(galleryItems);
-///
+    const instance = basicLightbox.create(`
+    <img src="${evt.target.dataset.source}" width="800" height="600">
+`)
+instance.show()
 
+document.body.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    instance.close();
+  }
+});
+}
 
-
-
-// preview:
-// 'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820__480.jpg',
-// original:
-// 'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820_1280.jpg',
-// description: 'Hokkaido Flower',
-
-
-// const instance = basicLightbox.create(`<img src="assets/images/image.png" width="800" height="600">`)
-
-// instance.show()
+console.log(galleryItems); 
